@@ -81,7 +81,12 @@ async.waterfall(tests = [
                     return cb(null, errStack);
                 }
 
-                console.log("Got project activities!".green, ret.activity.length.toString().grey);
+                if (ret.activity) {
+                    console.log("Got project activities!".green, ret.activity.length.toString().grey);
+                }
+                else {
+                    console.log("Got project activities!".green, ret.toString().grey);
+                }
 
                 if (pivotal.debug) {
                     for(i in ret.activity) {
@@ -335,12 +340,12 @@ async.waterfall(tests = [
             });
         },
         function (projectId, errStack, cb) {
-
+            
             console.log("Calling getStories".grey, projectId);
 
             pivotal.getStories(projectId, { limit : 5 }, function (err, ret) {
-
-                var i, story;
+                
+                var i, story, firstStory;
 
                 console.log('callback:',  arguments);
                 if (err) {
@@ -350,7 +355,13 @@ async.waterfall(tests = [
                 }
 
                 story = Object.prototype.toString.call(ret.story) === '[object Array]' ? ret.story : [ret.story];
-                console.log("Got project's stories!".green, ret.story.length);
+
+                if (ret.story) {
+                    console.log("Got project's stories!".green, ret.story.length);
+                }
+                else {
+                    console.log("Got project's stories!".green, ret);
+                }
 
                 if (pivotal.debug) {
                     for (i in ret.story) {
@@ -358,7 +369,8 @@ async.waterfall(tests = [
                     }
                 }
 
-                return cb(null, projectId, defaultStoryId || ret.story[0].id, errStack);
+                firstStory = (ret.story) ? ret.story[0].id : null;
+                return cb(null, projectId, defaultStoryId || firstStory, errStack);
             });
         },
         function (projectId, storyId, errStack, cb) {
