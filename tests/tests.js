@@ -360,7 +360,7 @@ async.waterfall(tests = [
                     console.log("Got project's stories!".green, ret.story.length);
                 }
                 else {
-                    console.log("Got project's stories!".green, ret);
+                    console.log("No stories in project!".green, ret);
                 }
 
                 if (pivotal.debug) {
