@@ -780,7 +780,7 @@ pivotal.apiCall = function (method, pathSegments, query, data, file, cb) {
                 return cb(null, null);
             }
 
-            // try {
+            try {
                 parser.parseString(content, function (err, ret) {
 
                     pivotal.log("info", "Result:", content);
@@ -803,10 +803,11 @@ pivotal.apiCall = function (method, pathSegments, query, data, file, cb) {
 
                     cb(err, ret);
                 });
-            // } catch (err) {
+             } catch (err) {
+                console.log('err: ', err)
             //     console.log('cb(err, null) - catch')
-            //     cb(err, null);
-            // }
+                cb(err, null);
+             }
         });
     });
 
