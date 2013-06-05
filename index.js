@@ -205,7 +205,7 @@ pivotal.getProject = function (projectId, cb) {
 */
 pivotal.addProject = function (projectData, cb) {
 
-    if (!projectData.no_owner) {
+    if (typeof projectData.no_owner === 'undefined') {
         projectData.no_owner = true;
     }
 
@@ -878,7 +878,12 @@ pivotal.toXml = function (data) {
 
     var ret = "",
         val = null,
-        d   = null;
+        d   = null,
+        t   = '';
+
+    var fieldTypes = {
+        'no_owner': 'type=\"boolean\"'
+    }
 
     for(d in data){
         if (data.hasOwnProperty(d)) {
@@ -889,7 +894,10 @@ pivotal.toXml = function (data) {
                     val = sanitize(data[d].toString()).entityEncode();
             }
 
-            ret += "<" + d + ">" + val + "</" + d + ">";
+            if (fieldTypes[d] !== undefined)
+                t = fieldTypes[d]
+
+            ret += "<" + d + ' ' + t + ">" + val + "</" + d + ">";
         }
     }
 
