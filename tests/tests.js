@@ -369,7 +369,7 @@ async.waterfall(tests = [
                     }
                 }
 
-                firstStory = (ret.story) ? ret.story[0].id : null;
+                firstStory = (ret.story.length > 0) ? ret.story[0].id : null;
                 return cb(null, projectId, defaultStoryId || firstStory, errStack);
             });
         },
