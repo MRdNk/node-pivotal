@@ -892,11 +892,12 @@ pivotal.toXml = function (data) {
     var ret = "",
         val = null,
         d   = null,
-        t   = '';
+        t   = '',
+        fieldTypes = {};
 
-    var fieldTypes = {
+    fieldTypes = {
         'no_owner': 'type=\"boolean\"'
-    }
+    };
 
     for(d in data){
         if (data.hasOwnProperty(d)) {
@@ -907,9 +908,9 @@ pivotal.toXml = function (data) {
                     val = sanitize(data[d].toString()).entityEncode();
             }
 
-            if (fieldTypes[d] !== undefined)
-                t = fieldTypes[d]
-
+            if (fieldTypes[d] !== undefined){
+                t = fieldTypes[d];
+            }
             ret += "<" + d + ' ' + t + ">" + val + "</" + d + ">";
         }
     }
