@@ -780,34 +780,28 @@ pivotal.apiCall = function (method, pathSegments, query, data, file, cb) {
                 return cb(null, null);
             }
 
-            try {
-                parser.parseString(content, function (err, ret) {
+            parser.parseString(content, function (err, ret) {
 
-                    pivotal.log("info", "Result:", content);
+                pivotal.log("info", "Result:", content);
 
-                    if (err) {
+                if (err) {
 
-                        pivotal.log("error", "Result:", content);
+                    pivotal.log("error", "Result:", content);
 
-                        err = {
-                            "errors" : {
-                                "error" : [ "Error while parsing PT HTTP service response", err ]
-                            }
-                        };
-                    }
+                    err = {
+                        "errors" : {
+                            "error" : [ "Error while parsing PT HTTP service response", err ]
+                        }
+                    };
+                }
 
-                    if (ret && ret.errors) {
-                        err = ret;
-                        ret = null;
-                    }
+                if (ret && ret.errors) {
+                    err = ret;
+                    ret = null;
+                }
 
-                    cb(err, ret);
-                });
-             } catch (err) {
-                console.log('err: ', err)
-            //     console.log('cb(err, null) - catch')
-                cb(err, null);
-             }
+                cb(err, ret);
+            });
         });
     });
 
