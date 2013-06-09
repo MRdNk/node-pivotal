@@ -5,7 +5,8 @@ var pivotal = require('../index.js'),
     debug   = (process.env.debug !== undefined),
     projectId = parseInt(process.env.project_id,10) || null,
     storyId = parseInt(process.env.story_id,10) || null,
-    projectMemberId = parseInt(process.env.member_id,10) || null;
+    projectMemberId = parseInt(process.env.member_id,10) || null,
+    accountId = parseInt(process.env.account_id, 10) || null;
 
 console.log('projectId', projectId)
 pivotal.useToken(token);
@@ -15,13 +16,19 @@ var story_ids = [];
 // Run array check for no stories
 exports.noStories = {
   setUp: function (callback) {
-    pivotal.getStories(projectId, { limit : 5 }, function (err, ret) {
-      if (ret.story.length === 0) {
+    var projData = {
+        name: 'node-pivotalTest'
+      , account_id: accountId
+      , no_owner: false
+    }
+    pivotal.addProject(projData, function (err, ret) {
+      if(err) {
+        console.log('Error adding project'.red)
+        throw new Error('Error adding project')
+      }
+      else {
+        projectId = parseInt(ret.id, 10)
         callback()
-      } else {
-        console.error('Project has stories, unable to test'.red.bold)
-        callback('Project has stories, unable to test')
-        test.done()
       }
     })
   },
@@ -36,25 +43,21 @@ exports.noStories = {
 // Run array check for one story
 exports.oneStory = {
   setUp: function (callback) {
-    pivotal.getStories(projectId, {limit: 3}, function (err, ret) {
-      if (ret.story.length !== 0) {
-        callback('Project has stories, unable to test'.red.bold)
-        test.done()
-      } else {
-        var storyData = {
-            name: 'test'
-          , story_type: 'feature'
-        }
-        pivotal.addStory(projectId, storyData, function (err, ret) {
-          if(err) {
-            callback()
-            test.done()
-          }
-          story_ids = ret.id
-          callback()
-        })
+    var storyData = {
+        name: 'test'
+      , story_type: 'feature'
+    }
+    pivotal.addStory(projectId, storyData, function (err, ret) {
+      if(err) {
+        console.log(err.red.bold)
+        throw new Error(err)
+
+        // callback()
       }
-        
+      console.log('story added: ' + ret)
+      story_ids = ret.id
+      
+      callback()
     })
   },
   oneStory: function (test) {
@@ -78,9 +81,7 @@ exports.twoStories = {
     pivotal.getStories(projectId, {limit: 3}, function (err, ret) {
       if (ret.story.length !== 0) {
         callback('Project has stories, unable to test'.red.bold)
-        test.done()
       } else {
-
         // Add two stories
         async.parallel ({
           story1: function (cb) {
@@ -134,6 +135,7 @@ exports.twoStories = {
     function finished () {
       if (count === len) {
         story_ids = null
+        console.log('Remember to remove project manually: ' + projectId)
         callback()
       }
     }
