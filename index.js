@@ -924,4 +924,26 @@ pivotal.toXml = function (data) {
     return ret;
 };
 
+// Return array - takes the result and turns it into an array
+pivotal.toArray = function (data, name) {
+    if(pivotal.isEmptyObject(data)) {
+        data[name] = [];
+    } else if (pivotal.isEmptyObject(data[name])) {
+        data[name] = [];
+    } else if (!Array.isArray(data[name])) {
+        data[name] = [data[name]];
+    }
+    return data;
+}
+
+// Checks if an Object is empty
+pivotal.isEmptyObject = function (obj) {
+    for (var d in obj) {
+        if(obj.hasOwnProperty(d)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 module.exports = pivotal;
