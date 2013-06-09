@@ -416,26 +416,12 @@ pivotal.getCurrentBacklogIterations = function (projectId, cb) {
 
 */
 pivotal.getStories = function (projectId, filters, cb) {
-    function isEmptyObject (obj) {
-        for (var d in obj){
-            return false;
-        }
-        return true;
-    }
     pivotal.apiCall("GET", ["projects", projectId, "stories"], filters, null, null, function (err, data) {
         if (err) {
-            cb(err);
+            cb(err)
+        } else {
+            cb(null, pivotal.toArray(data, 'story'))
         }
-        if (isEmptyObject(data)) {
-            data = {story: []}
-        }
-        else if (isEmptyObject(data.story)) {
-            data.story = [];
-        }
-        else if (!Array.isArray(data.story)) {
-            data.story = [data.story];
-        }
-        cb(null, data);
     });
 };
 
